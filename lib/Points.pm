@@ -1,8 +1,11 @@
-=pod
+=head1 NAME
+Points/Point set
+=head1 DESCRIPTION
 Represents a point set and therefore maybe used to represent a Polygon
 When representing a Polygon, point order is counter clockwise by convention
 Some methods are only relevant for Polygon so you may want to derive Polygon from Points at some point;-)
 =cut
+
 package Points;
 use Point;
 use Moose;

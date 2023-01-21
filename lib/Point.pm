@@ -1,6 +1,7 @@
-=pod
+=head1 DESCRIPTION
 Point representation
 =cut
+
 package Point;
 use Moose;
 
