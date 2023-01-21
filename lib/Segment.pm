@@ -23,6 +23,12 @@ sub getP2{
     return ($self->all_points())[1];
 }
 
+# compute segment length as sqrt((x2-x1)^2+(y2-y1)^2)
+sub getLength{
+    my $self=shift;
+    return sqrt(($self->getP2()->{x}-$self->getP1()->{x})**2+($self->getP2()->{y}-$self->getP1()->{y})**2);
+}
+
 # compute the intersection with another line
 # returns intersection as a Point or undef is lines are parallel
 sub computeLineIntersection{
@@ -34,11 +40,22 @@ sub computeLineIntersection{
     # x=x1*(y2-y1)/(x2-x1)-x3*(y4-y3)/(x4-x3)+y3-y1
     # y=
     my $s1=$self;
-    my $x=$s1->getP1()->{x}*($s1->getP2()->{y}-$s1->getP1()->{y})/($s1->getP2()->{x}-$s1->getP1()->{x});
-      $x-=$s2->getP1()->{x}*($s2->getP2()->{y}-$s2->getP1()->{y})/($s2->getP2()->{x}-$s2->getP1()->{x});
+    my $x=$s1->getP1()->{x}*($s1->getP2()->{y}-$s1->getP1()->{y});
+    my $d=($s1->getP2()->{x}-$s1->getP1()->{x});
+    if (!$d){
+        print("Vertical segment 1 not yet supported");
+        return undef;
+    }
+    $x/=$d;
+      $x-=$s2->getP1()->{x}*($s2->getP2()->{y}-$s2->getP1()->{y});
+      $d=($s2->getP2()->{x}-$s2->getP1()->{x});
+      if (!$d){
+        print("Vertical segment 2 not yet supported");
+        return undef;
+      }
       $x+=$s2->getP1()->{y}-$s1->getP1()->{y};
       # check whether denominator is zero
-    my $d=($s1->getP2()->{y}-$s1->getP1()->{y})/($s1->getP2()->{x}-$s1->getP1()->{x})-($s2->getP2()->{y}-$s2->getP1()->{y})/($s2->getP2()->{x}-$s2->getP1()->{x});
+      $d=($s1->getP2()->{y}-$s1->getP1()->{y})/($s1->getP2()->{x}-$s1->getP1()->{x})-($s2->getP2()->{y}-$s2->getP1()->{y})/($s2->getP2()->{x}-$s2->getP1()->{x});
     if ($d==0){ # TBC < 10-6
         return undef;}
     $x/=$d;
@@ -50,11 +67,18 @@ sub computeSegmentIntersection{
     my $self=shift;
 }
 
+# whether the segment is a valid airport proposal
+# candidate segments partly off shore are invalid
+sub isValidAirport{
+    return 1; # TBC
+}
+
 sub toString{
     my $self=shift;
     my $st="";
-    $st.="p1:".$self->getP1()->toString();
+    $st.="\np1:".$self->getP1()->toString();
     $st.="p2:".$self->getP2()->toString();
+    $st.="length:".$self->getLength();
     return $st;
 }
 

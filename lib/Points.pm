@@ -17,9 +17,19 @@ has 'points' => (
                     traits  => ['Array'],
                     handles =>{
                        all_points => 'elements',
-                       count_points  => 'count' 
+                       count_points  => 'count',
+                       add_point     => 'push'
                     }
                 );
+has 'candidateSegments' =>( is=>'ro',
+                            isa=>'ArrayRef[Segment]',
+                            traits => ['Array'],
+                            handles =>{
+                                all_candidateSegments => 'elements',
+                                count_candidateSegments => 'count',
+                                add_candidateSegment => 'push'
+                            }
+                          );
 
 # create an instance from a multi line string with first line containing line#
 # following lines containing the point coordinates
@@ -40,7 +50,56 @@ sub CreateFromString{
         return undef
     }
     my @points=map(Point->CreateFromString($_), @lines);
-    return Points->new(points=>\@points);
+    return Points->new(points=>\@points, candidateSegments=>[]);
+}
+
+sub CreateFromFile{
+    my $cls=shift;
+    my $file_name=shift;
+    open my $input, '<', $file_name or die "can't open $file_name: $!";
+    my $points=Points->new(points=>[], candidateSegments=>[]);
+    while (<$input>) {
+        chomp;
+        $points->addFromLine($_);
+    }
+    close $input or die "can't close $file_name $!";
+    return $points;
+}
+
+# input: line as a string
+sub addFromLine{
+    my $self=shift;
+    my $line=shift;
+    my $point=Point->CreateFromString($line);
+    if ($point){
+        $self->add_point($point);
+    }
+}
+
+# builds it any candidate segment array starting from the index ind
+#
+# returns an array of Segments
+sub buildCandidateSegments{
+    my $self=shift;
+    my $ind=shift;
+    my $point_count=$self->count_points();
+    my @points=$self->all_points();
+    if ($ind>=$point_count-1){
+        return;
+    }
+    for (my $i=$ind+1;$i<$point_count;$i++){
+        $self->add_candidateSegment(Segment->new(points=>[$points[$ind],$points[$i]]));
+    }
+    $self->buildCandidateSegments($ind+1); # recurse
+}
+
+sub findLongestCandidateSegment{
+    my $self=shift;
+    my @candidateSegments=$self->all_candidateSegments();
+    # TC sort them by length in reverse order
+    foreach my $candidateSegment (@candidateSegments){
+        $candidateSegment->toString();
+    }
 }
 
 sub toString{
@@ -48,6 +107,9 @@ sub toString{
     my $st="";
     #my $count=$self->count_points;
     $st.='['.join(',',map($_->toString(), $self->all_points())).']';
+    if ($self->all_candidateSegments()){
+        $st.='candidate segments:['.join(',',map($_->toString(), $self->all_candidateSegments())).']';
+    }
     return $st;
 }
 
