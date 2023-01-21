@@ -1,20 +1,21 @@
+=pod
+Point representation
+=cut
 package Point;
 use Moose;
-#
+
 has 'x' => (is=>'rw', isa=>'Num');
 has 'y' => (is=>'rw', isa=>'Num');
 
-=pod old way without Moose
-sub new {
-    my $class=shift;
-    my $self={
-        x=>shift,
-        y=>shift
-    };
-    $self=bless($self,$class);
-    return $self;
+# 
+sub CreateFromString{
+    my $cls=shift;
+    my @coordinates=split(' ',shift);
+    if (scalar @coordinates>=2){
+        return Point->new(x=>$coordinates[0],y=>$coordinates[1]);
+    }
+    return undef;
 }
-=cut
 
 sub toString{
     my $self=shift;
