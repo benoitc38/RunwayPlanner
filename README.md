@@ -1,2 +1,11 @@
-This application identifies the longest runway within a polygonal island. This application is written in modern Perl.
-input: island shape as a polygon
+Description:
+============
+This application identifies the longest runway within a polygonal island.
+
+Language:
+=========
+This application is written in modern Perl.
+
+Input:
+======
+Island shape as a polygon (coordinates text file)
