@@ -27,7 +27,8 @@ has 'points' => (
                        add_point     => 'push'
                     }
                 );
-has 'candidateSegments' =>( is=>'ro',
+has 'candidateSegments' =>( 
+                            is=>'ro',
                             isa=>'ArrayRef[Segment]',
                             traits => ['Array'],
                             handles =>{
@@ -36,6 +37,18 @@ has 'candidateSegments' =>( is=>'ro',
                                 add_candidateSegment => 'push'
                             }
                           );
+
+has 'longestSegments' => (
+                            is=>'ro',
+                            isa=>'ArrayRef[Segment]',
+                            traits => ['Array'],
+                            handles =>{
+                                all_longestSegments => 'elements',
+                                count_longestSegments => 'count',
+                                add_longestSegment => 'push'
+                            },
+                            default=>sub{[]}
+                         );
 # optional name typically the one from the CSV
 has name =>( 
             is=>'rw',
@@ -106,12 +119,30 @@ sub buildCandidateSegments{
     $self->buildCandidateSegments($ind+1); # recurse
 }
 
-sub findLongestCandidateSegment{
+# to sort in reverse length order
+sub compareLength{
+    return $b->isLongerThan($a);
+}
+
+# build an array ref of longest Segments if needed i.e. cache is empty
+# cache result
+sub buildLongestSegments{
     my $self=shift;
+    if ($self->count_longestSegments()>0){
+        return;} # job already done
     my @candidateSegments=$self->all_candidateSegments();
-    # TC sort them by length in reverse order
-    foreach my $candidateSegment (@candidateSegments){
-        $candidateSegment->toString();
+    # sort them by length in descending order
+    my @sortedCandidateSegments=sort compareLength @candidateSegments;
+    my $topLength;
+    if (@sortedCandidateSegments>0){
+        $topLength=$sortedCandidateSegments[0]->getLength();
+    }
+    foreach my $candidateSegment (@sortedCandidateSegments){
+        if ($topLength-$candidateSegment->getLength()<=10**-6){
+            $self->add_longestSegment($candidateSegment);
+        }else{
+            last;
+        }
     }
 }
 
@@ -150,7 +181,11 @@ sub toString{
     #my $count=$self->count_points;
     $st.='['.join(',',map($_->toString(), $self->all_points())).']';
     if ($self->all_candidateSegments()){
-        $st.='candidate segments:['.join(',',map($_->toString(), $self->all_candidateSegments())).']';
+        $st.="\ncandidate segments:[".join(',',map($_->toString(), $self->all_candidateSegments())).']';
+    }
+    if ($self->count_longestSegments()>0){
+        $st.="\nlongest segments#:${\$self->count_longestSegments()}";
+        # TO DO add them also
     }
     return $st;
 }

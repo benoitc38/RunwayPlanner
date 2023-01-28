@@ -42,13 +42,17 @@ my $island1=Points->CreateFromFile("island1.txt");
 print("island1:".$island1->toString());
 $island1->toSVGFile();
 
+#island 1 (first file)
 $island1->buildCandidateSegments(0);
-print("island1:".$island->toString());
+$island1->buildLongestSegments();
+print("island1:".$island1->toString());
 
+#island 2 (second file)
 my $island2=Points->CreateFromFile("island2.txt");
-print("island2:".$island2->toString());
+#print("island2:".$island2->toString());
 
 $island2->buildCandidateSegments(0);
+$island2->buildLongestSegments();
 print("island2:".$island2->toString());
 $island2->toSVGFile();
 

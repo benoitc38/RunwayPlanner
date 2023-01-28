@@ -1,8 +1,8 @@
 =head1 NAME
 Segment/Line
 =head1 DESCRIPTION
-Segment or Line representation as a pair of Point (p1, p2)
-The segment or Line is not oriented but by convention, the first point is named p1, the second one p2
+Segment, Line or vector representation as a pair of Point (p1, p2)
+The segment or Line are not oriented but by convention, the first point is named p1, the second one p2
 =cut
 
 package Segment;
@@ -15,20 +15,39 @@ use Moose;
 
 extends 'Points';
 
+# cache for length
+has length => (
+                 is=>'rw',
+                 isa=>'Maybe[Num]',
+                 default=>sub{undef}
+              );
+
+# starting point 
 sub getP1{
     my $self=shift;
     return ($self->all_points())[0];
 }
 
+# ending point
 sub getP2{
     my $self=shift;
     return ($self->all_points())[1];
 }
 
-# compute segment length as sqrt((x2-x1)^2+(y2-y1)^2)
+# compute or get from cache segment length as sqrt((x2-x1)^2+(y2-y1)^2)
 sub getLength{
     my $self=shift;
-    return sqrt(($self->getP2()->{x}-$self->getP1()->{x})**2+($self->getP2()->{y}-$self->getP1()->{y})**2);
+    if (!$self->length){
+        $self->length(sqrt(($self->getP2()->{x}-$self->getP1()->{x})**2+($self->getP2()->{y}-$self->getP1()->{y})**2));
+    }
+    return $self->length;
+}
+
+# compare length with another segment
+# input: $segment2
+# returns 1 if longer, 0 if equals, and -1 if shorter than segment 2
+sub isLongerThan($self, $segment2){
+    return ($self->getLength() <=> $segment2->getLength());
 }
 
 # compute the intersection with another line
@@ -38,7 +57,7 @@ sub computeLineIntersection{
     my $s2=shift;
     # segment 1: y=(y2-y1)/(x2-x1)*(x-x1)+y1
     # segment 2: y=(y4-y3)/(x4-x3)*(x-x3)+y3
-    # intersection: 2 equations - 2 inconnues
+    # intersection: 2 equations - 2 unknows
     # x=x1*(y2-y1)/(x2-x1)-x3*(y4-y3)/(x4-x3)+y3-y1
     # y=
     my $s1=$self;
