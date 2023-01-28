@@ -6,6 +6,8 @@ The segment or Line is not oriented but by convention, the first point is named 
 =cut
 
 package Segment;
+use Modern::Perl;
+use experimental 'signatures';
 use FindBin::libs;
 use Points;
 use Moose;
@@ -71,6 +73,11 @@ sub computeSegmentIntersection{
 # candidate segments partly off shore are invalid
 sub isValidAirport{
     return 1; # TBC
+}
+
+# <line x1="0" y1="80" x2="100" y2="20" 
+sub toSVGHTMLTagString($self){
+    return "<line ${\$self->getP1()->toSVGSegmentString(1)} ${\$self->getP2()->toSVGSegmentString(2)} fill=\"none\" stroke=\"black\" />";
 }
 
 sub toString{

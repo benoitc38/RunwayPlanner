@@ -1,5 +1,8 @@
-use strict;
-use warnings;
+=head1 DESCRIPTION
+Note: The very first line of the csv file has been removed since info is redundant.
+=cut
+use Modern::Perl;
+
 
 use FindBin::libs;
 #use Log::Log4perl qw(:easy);
@@ -22,18 +25,22 @@ print("unit test p4:".$p4->toString());
 
 
 my $island=Points->CreateFromString(q{2
-1.1 1.12
-3.3 3.45
+1 1
+3 4
 });
-$island->addFromLine("1.2 2.3");
+$island->addFromLine("1 2");
 print("unitTestIsland1:".$island->toString());
+$island->name("unitTestIsland1");
+$island->toSVGFile();
 
-$island=Points->new(points=>[], candidateSegments=>[]);
-$island->addFromLine("4.2 5.3");
+$island=Points->new(points=>[], candidateSegments=>[], name=>"unitTestIsland2");
+$island->addFromLine("4 5");
 print("unitTestIsland2:".$island->toString());
+$island->toSVGFile();
 
 my $island1=Points->CreateFromFile("island1.txt");
 print("island1:".$island1->toString());
+$island1->toSVGFile();
 
 $island1->buildCandidateSegments(0);
 print("island1:".$island->toString());
@@ -43,11 +50,13 @@ print("island2:".$island2->toString());
 
 $island2->buildCandidateSegments(0);
 print("island2:".$island2->toString());
+$island2->toSVGFile();
 
 
 my @points=[$p1,$p2];
-my $s1=Segment->new(points=>[$p1,$p2]);
+my $s1=Segment->new(points=>[$p1,$p2], name=>'s1');
 print("s1:".$s1->toString()." length:".$s1->getLength());
+$s1->toSVGFile();
 
 my $s2=Segment->new(points=>[$p3,$p4]);
 print("s2:".$s2->toString());

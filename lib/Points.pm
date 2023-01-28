@@ -7,8 +7,14 @@ Some methods are only relevant for Polygon so you may want to derive Polygon fro
 =cut
 
 package Points;
-use Point;
+use Modern::Perl;
+use experimental 'signatures';
 use Moose;
+
+use Point;
+use constant CSV_EXT => '.csv';
+use constant TXT_EXT => '.txt';
+use constant SVG_EXT => '.svg';
 
 
 has 'points' => (
@@ -30,6 +36,12 @@ has 'candidateSegments' =>( is=>'ro',
                                 add_candidateSegment => 'push'
                             }
                           );
+# optional name typically the one from the CSV
+has name =>( 
+            is=>'rw',
+            isa=>'Maybe[Str]',
+            default=>sub {undef}
+            );
 
 # create an instance from a multi line string with first line containing line#
 # following lines containing the point coordinates
@@ -57,7 +69,8 @@ sub CreateFromFile{
     my $cls=shift;
     my $file_name=shift;
     open my $input, '<', $file_name or die "can't open $file_name: $!";
-    my $points=Points->new(points=>[], candidateSegments=>[]);
+    $file_name =~ s/\.txt//; # get the CSV file name as the point set name (e.g: polygon name)
+    my $points=Points->new(points=>[], candidateSegments=>[], name=>$file_name);
     while (<$input>) {
         chomp;
         $points->addFromLine($_);
@@ -100,6 +113,35 @@ sub findLongestCandidateSegment{
     foreach my $candidateSegment (@candidateSegments){
         $candidateSegment->toString();
     }
+}
+
+sub toSVGFile($self){
+    my $name=$self->name || "noName";
+    my $file_path=$name.SVG_EXT;
+    if (open FILE, '>:utf8', $file_path) {
+        print FILE $self->toSVGString();
+        close FILE;
+    }   
+}
+
+# SVG format examples
+
+# <polygon points="0,100 50,25 50,75 100,0" />
+sub toSVGString($self){
+   my $st='<svg viewBox="-200 -200 200 100" xmlns="http://www.w3.org/2000/svg">';
+   $st.=$self->toSVGHTMLTagString(); 
+   $st.="</svg>";
+   return $st;
+}
+
+sub toSVGHTMLTagString($self){
+    my $st="";
+    if ($self->count_points>2){
+        $st.='<polygon points="';
+        $st.=join(" ",map($_->toSVGString(), $self->all_points()));
+        $st.='" fill="none" stroke="black" />';
+    }
+    return $st;
 }
 
 sub toString{
