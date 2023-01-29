@@ -38,7 +38,6 @@ sub getNext($self){
 }
 
 # returns previous edge (going clockwise) adjacent to this vertex
-# TO DO don't forget to swap Segment direction in some cases
 sub getPreviousEdge($self){
     return $self->container->getEdgeByIndex($self->index-1);
 }

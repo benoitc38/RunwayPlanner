@@ -65,18 +65,32 @@ print("\n next edge angle:".$v6->getNextEdgeAngle());
 
 $island1->buildEdges();
 $island1->buildCandidateSegments(0);
-$island1->buildLongestSegments();
+$island1->buildValidLongestSegments();
 print("island1:".$island1->toString());
 $island1->toSVGFile();
 
 #island 2 (second file)
 my $island2=Points->CreateFromFile("island2.txt");
+$island2->initialize();
 #print("island2:".$island2->toString());
 $island2->buildEdges();
 $island2->buildCandidateSegments(0);
-$island2->buildLongestSegments();
+$island2->buildValidLongestSegments();
 print("island2:".$island2->toString());
 $island2->toSVGFile();
+
+
+#island L (test case for non valid offshore candidate)
+my $islandL=Points->CreateFromFile("islandL.txt");
+$islandL->initialize();
+#print("island2:".$island2->toString());
+$islandL->buildEdges();
+$islandL->buildCandidateSegments(0);
+$islandL->buildValidLongestSegments();
+print("islandL:".$islandL->toString());
+$islandL->toSVGFile();
+
+
 
 =pod
 my @points=[$p1,$p2];

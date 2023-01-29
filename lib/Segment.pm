@@ -1,7 +1,7 @@
 =head1 NAME
 Segment/Line
 =head1 DESCRIPTION
-Segment, Line or vector representation as a pair of Point (p1, p2)
+Segment, Line or vector representation as a pair of Point (p1, p2) or Vertex
 The segment or Line are not oriented but by convention, the first point is named p1, the second one p2
 =cut
 
@@ -61,6 +61,23 @@ sub getAngle($self){
     my $x2=$self->getP2()->{x};
     my $y2=$self->getP2()->{y};
     return atan2($y2-$y1,$x2-$x1)/pi*180;
+}
+
+sub isValid($self){
+    return $self->directsOnShore();
+}
+
+# whether the segment is directed towards the polygon (returns true), false otherwise
+# preconditions: the starting point is a Vertex
+sub directsOnShore($self){
+    my $v=$self->getP1();
+    my $angle=$self->getAngle();
+    my $prevAngle=$v->getPreviousEdgeAngle();
+    my $nextAngle=$v->getNextEdgeAngle();
+    if ( ( ($prevAngle <= $angle) && ($angle <= $nextAngle) ) || ( ($nextAngle <= $angle) && ($angle <= $prevAngle) ) ){
+        return 1;
+    }
+    return 0;
 }
 
 # compute the intersection with another line

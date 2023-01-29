@@ -54,7 +54,7 @@ has candidateSegments =>(
                                 add_candidateSegment => 'push'
                             }
                           );
-
+# where valid longest segments are stored (array since multiple equal-length possible)
 has longestSegments => (
                             is=>'ro',
                             isa=>'ArrayRef[Segment]',
@@ -194,20 +194,25 @@ sub compareLength{
     return $b->isLongerThan($a);
 }
 
-# build an array ref of longest Segments if needed i.e. cache is empty
-# cache result
-sub buildLongestSegments{
+# build an array ref of longest and valid Segments if needed i.e. cache is empty cache result
+# relies on ordered segment candidates
+sub buildValidLongestSegments{
     my $self=shift;
     if ($self->count_longestSegments()>0){
         return;} # job already done
     my @candidateSegments=$self->all_candidateSegments();
     # sort them by length in descending order
     my @sortedCandidateSegments=sort compareLength @candidateSegments;
+    # iterate thru the list until a valid candidate is found
     my $topLength;
-    if (@sortedCandidateSegments>0){
-        $topLength=$sortedCandidateSegments[0]->getLength();
-    }
+   
     foreach my $candidateSegment (@sortedCandidateSegments){
+        if (!$candidateSegment->isValid()){  # optimize: check after equality?
+            next;
+        }
+        if (!defined($topLength)){ # store top length in case of equality
+            $topLength=$candidateSegment->getLength();
+        }
         if ($topLength-$candidateSegment->getLength()<=10**-6){
             $self->add_longestSegment($candidateSegment);
         }else{
@@ -237,11 +242,15 @@ sub buildEdges($self){
 
 }
 
-# whether the candidate segment is fully onshore:
+# ensure the candidate segment is fully onshore:
 #     -should not intersection any edge other than at its start and end
 #     -should not start directly off-shore: ensure that starting angle is within the containing edge angles
 sub isValid($self, $candidateSegment){
-
+    my $angle=$candidateSegment->getAngle();
+    if (!$candidateSegment->directsOnShore()){
+        return 0;
+    }
+    return 1;
 }
 
 sub toSVGFile($self){
@@ -292,8 +301,8 @@ sub toString{
         $st.="\ncandidate segments:[".join(',',map($_->toString(), $self->all_candidateSegments())).']';
     }
     if ($self->count_longestSegments()>0){
-        $st.="\nlongest segments#:${\$self->count_longestSegments()}";
-        $st.="\nlongest segments:[".join(',',map($_->toString(), $self->all_longestSegments())).']';
+        $st.="\nvalid longest segments#:${\$self->count_longestSegments()}";
+        $st.="\nvalid longest segments:[".join(',',map($_->toString(), $self->all_longestSegments())).']';
     }
     
     return $st;
