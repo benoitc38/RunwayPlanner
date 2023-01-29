@@ -40,7 +40,7 @@ $island->toSVGFile();
 
 my $island1=Points->CreateFromFile("island1.txt");
 $island1->initialize();
-print("island1:".$island1->toString());
+#print("island1:".$island1->toString());
 
 
 #island 1 (first file)
@@ -66,7 +66,7 @@ print("\n next edge angle:".$v6->getNextEdgeAngle());
 $island1->buildEdges();
 $island1->buildCandidateSegments(0);
 $island1->buildValidLongestSegments();
-print("island1:".$island1->toString());
+print("\nisland1:".$island1->toString());
 $island1->toSVGFile();
 
 #island 2 (second file)
@@ -76,7 +76,7 @@ $island2->initialize();
 $island2->buildEdges();
 $island2->buildCandidateSegments(0);
 $island2->buildValidLongestSegments();
-print("island2:".$island2->toString());
+print("\nisland2:".$island2->toString());
 $island2->toSVGFile();
 
 
@@ -87,7 +87,7 @@ $islandL->initialize();
 $islandL->buildEdges();
 $islandL->buildCandidateSegments(0);
 $islandL->buildValidLongestSegments();
-print("islandL:".$islandL->toString());
+print("\nislandL:".$islandL->toString());
 $islandL->toSVGFile();
 
 
@@ -100,9 +100,31 @@ $s1->toSVGFile();
 
 my $s2=Segment->new(points=>[$p3,$p4]);
 print("s2:".$s2->toString());
-
-
-my $iPoint=$s1->computeLineIntersection($s2);
-
-print("intersection:".$iPoint->toString());
 =cut
+
+# intersection unit tests Vertex Segment and Edge
+my $v0=$islandL->getVertexByIndex(0);
+my $v2=$islandL->getVertexByIndex(2);
+my $v3=$islandL->getVertexByIndex(3);
+my $v4=$islandL->getVertexByIndex(4);
+my $v5=$islandL->getVertexByIndex(5);
+my $cs=Segment->new(points=>[$v2,$v5]);
+my $e0=$v0->getNextEdge();
+my $e1=$v2->getPreviousEdge();
+my $e2=$v2->getNextEdge();
+my $e4=$v4->getNextEdge();
+my $e5=$v0->getPreviousEdge();
+my $e3=$v4->getPreviousEdge();
+
+
+print("\ninter e0:".$cs->computeLineIntersection($e0)->toString());
+print("\ninter e1:".$cs->computeLineIntersection($e1)->toString());
+print("\ninter e2:".$cs->computeLineIntersection($e2)->toString());
+print("\ninter e3:".$cs->computeLineIntersection($e3)->toString());
+print("\ninter e4:".$cs->computeLineIntersection($e4)->toString());
+print("\ninter e5:".$cs->computeLineIntersection($e5)->toString());
+
+#my $iPoint=$cs->computeLineIntersection($e3);
+
+#print("intersection:".$iPoint->toString());
+

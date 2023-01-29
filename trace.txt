@@ -1,0 +1,98 @@
+unit test p1:(5,13)unit test p2:(8,10)unit test p3:(5,10)unit test p4:(6,11)unitTestIsland1:[V(1,1),V(3,4),V(1,2)]unitTestIsland2:[V(4,5)]
+first vertex:V(0,20)0
+first next vertex:V(40,0)1
+first previous vertex:V(0,50)6
+ previous edge:
+p1:V(0,50)6p2:V(0,20)0length:30
+ next edge:
+p1:V(0,20)0p2:V(40,0)1length:44.7213595499958
+ previous edge angle:90
+ next edge angle:-26.565051177078
+last vertex next vertex:V(0,20)0
+last vertex next edge:
+p1:V(0,50)6p2:V(0,20)0length:30
+ previous edge angle:0
+ next edge angle:-90
+island1:[V(0,20)0,V(40,0)1,V(40,20)2,V(70,50)3,V(50,70)4,V(30,50)5,V(0,50)6]
+edges#:7
+edges:[
+p1:V(0,20)0p2:V(40,0)1length:44.7213595499958,
+p1:V(40,0)1p2:V(40,20)2length:20,
+p1:V(40,20)2p2:V(70,50)3length:42.4264068711929,
+p1:V(70,50)3p2:V(50,70)4length:28.2842712474619,
+p1:V(50,70)4p2:V(30,50)5length:28.2842712474619,
+p1:V(30,50)5p2:V(0,50)6length:30,
+p1:V(0,50)6p2:V(0,20)0length:30]
+candidate segments:[
+p1:V(0,20)0p2:V(40,0)1length:44.7213595499958,
+p1:V(0,20)0p2:V(40,20)2length:40,
+p1:V(0,20)0p2:V(70,50)3length:76.1577310586391,
+p1:V(0,20)0p2:V(50,70)4length:70.7106781186548,
+p1:V(0,20)0p2:V(30,50)5length:42.4264068711929,
+p1:V(0,20)0p2:V(0,50)6length:30,
+p1:V(40,0)1p2:V(40,20)2length:20,
+p1:V(40,0)1p2:V(70,50)3length:58.309518948453,
+p1:V(40,0)1p2:V(50,70)4length:70.7106781186548,
+p1:V(40,0)1p2:V(30,50)5length:50.9901951359278,
+p1:V(40,0)1p2:V(0,50)6length:64.0312423743285,
+p1:V(40,20)2p2:V(70,50)3length:42.4264068711929,
+p1:V(40,20)2p2:V(50,70)4length:50.9901951359278,
+p1:V(40,20)2p2:V(30,50)5length:31.6227766016838,
+p1:V(40,20)2p2:V(0,50)6length:50,
+p1:V(70,50)3p2:V(50,70)4length:28.2842712474619,
+p1:V(70,50)3p2:V(30,50)5length:40,
+p1:V(70,50)3p2:V(0,50)6length:70,
+p1:V(50,70)4p2:V(30,50)5length:28.2842712474619,
+p1:V(50,70)4p2:V(0,50)6length:53.851648071345,
+p1:V(30,50)5p2:V(0,50)6length:30]
+valid longest segments#:1
+valid longest segments:[
+p1:V(0,20)0p2:V(70,50)3length:76.1577310586391]
+island2:[V(0,2017)0,V(-2017,-2017)1,V(2017,0)2]
+edges#:3
+edges:[
+p1:V(0,2017)0p2:V(-2017,-2017)1length:4510.14911061708,
+p1:V(-2017,-2017)1p2:V(2017,0)2length:4510.14911061708,
+p1:V(2017,0)2p2:V(0,2017)0length:2852.46875530653]
+candidate segments:[
+p1:V(0,2017)0p2:V(-2017,-2017)1length:4510.14911061708,
+p1:V(0,2017)0p2:V(2017,0)2length:2852.46875530653,
+p1:V(-2017,-2017)1p2:V(2017,0)2length:4510.14911061708]
+valid longest segments#:2
+valid longest segments:[
+p1:V(0,2017)0p2:V(-2017,-2017)1length:4510.14911061708,
+p1:V(-2017,-2017)1p2:V(2017,0)2length:4510.14911061708]
+islandL:[V(0,0)0,V(40,0)1,V(40,10)2,V(10,10)3,V(10,30)4,V(0,30)5]
+edges#:6
+edges:[
+p1:V(0,0)0p2:V(40,0)1length:40,
+p1:V(40,0)1p2:V(40,10)2length:10,
+p1:V(40,10)2p2:V(10,10)3length:30,
+p1:V(10,10)3p2:V(10,30)4length:20,
+p1:V(10,30)4p2:V(0,30)5length:10,
+p1:V(0,30)5p2:V(0,0)0length:30]
+candidate segments:[
+p1:V(0,0)0p2:V(40,0)1length:40,
+p1:V(0,0)0p2:V(40,10)2length:41.2310562561766,
+p1:V(0,0)0p2:V(10,10)3length:14.142135623731,
+p1:V(0,0)0p2:V(10,30)4length:31.6227766016838,
+p1:V(0,0)0p2:V(0,30)5length:30,
+p1:V(40,0)1p2:V(40,10)2length:10,
+p1:V(40,0)1p2:V(10,10)3length:31.6227766016838,
+p1:V(40,0)1p2:V(10,30)4length:42.4264068711929,
+p1:V(40,0)1p2:V(0,30)5length:50,
+p1:V(40,10)2p2:V(10,10)3length:30,
+p1:V(40,10)2p2:V(10,30)4length:36.0555127546399,
+p1:V(40,10)2p2:V(0,30)5length:44.7213595499958,
+p1:V(10,10)3p2:V(10,30)4length:20,
+p1:V(10,10)3p2:V(0,30)5length:22.3606797749979,
+p1:V(10,30)4p2:V(0,30)5length:10]
+valid longest segments#:1
+valid longest segments:[
+p1:V(40,10)2p2:V(0,30)5length:44.7213595499958]
+inter e0:(60,0)
+inter e1:(40,10)
+inter e2:(40,10)
+inter e3:(10,25)
+inter e4:(0,30)
+inter e5:(0,30)

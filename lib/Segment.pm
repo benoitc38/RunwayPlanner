@@ -88,29 +88,62 @@ sub computeLineIntersection{
     # segment 1: y=(y2-y1)/(x2-x1)*(x-x1)+y1
     # segment 2: y=(y4-y3)/(x4-x3)*(x-x3)+y3
     # intersection: 2 equations - 2 unknows
+    # general case:
     # x=x1*(y2-y1)/(x2-x1)-x3*(y4-y3)/(x4-x3)+y3-y1
     # y=
+    # special cases: 
+    # x=x2=x1 and x3!=x4 y=(y4-y3)/(x4-x3)*(x1-x3)+y3
+    # x=x3=x4 and x2!=x1 and y=(y2-y1)/(x2-x1)*(x3-x1)+y1
+    # x=x3=x4=x2=x1 and any y=> overlapping segments
+    # x=x2=x1 and x3=x4 and x3!=x1 => undef (parallel disctinct lines)
     my $s1=$self;
-    my $x=$s1->getP1()->{x}*($s1->getP2()->{y}-$s1->getP1()->{y});
-    my $d=($s1->getP2()->{x}-$s1->getP1()->{x});
-    if (!$d){
-        print("Vertical segment 1 not yet supported");
-        return undef;
+    # alias for readability
+    my $x1=$s1->getP1()->{x};
+    my $y1=$s1->getP1()->{y};
+    my $x2=$s1->getP2()->{x};
+    my $y2=$s1->getP2()->{y};
+
+    my $x3=$s2->getP1()->{x};
+    my $y3=$s2->getP1()->{y};
+    my $x4=$s2->getP2()->{x};
+    my $y4=$s2->getP2()->{y};
+
+    # searched intersection point
+    my $x;
+    my $y;
+    # compute denominator first to identify formula
+    my $d1=$x2-$x1;
+    my $d2=$x4-$x3;
+    
+    if ( ($d1==0) && ($d2==0) ){ 
+        if ($x1==$x3){
+            # overlapping segment (for candidate validation, it's fine)
+            $x=$x1;
+            $y=undef; # good rep?
+        }else{
+            return undef; # distinct parallel
+        }
+    }elsif ($d1==0){ #x=x1=x2 and x3!=x4
+        $x=$x1;
+        $y=($y4-$y3)/($x4-$x3)*($x1-$x3)+$y3;
+    }elsif ($d2==0){ #x=x3=x4 and x2!=x1
+        $x=$x3;
+        $y=($y2-$y1)/($x2-$x1)*($x3-$x1)+$y1;
+    }else{
+        $x=$s1->getP1()->{x}*($s1->getP2()->{y}-$s1->getP1()->{y});
+        my $d1=($s1->getP2()->{x}-$s1->getP1()->{x});
+        $x/=$d1;
+        $x-=$s2->getP1()->{x}*($s2->getP2()->{y}-$s2->getP1()->{y});
+
+        $x+=$s2->getP1()->{y}-$s1->getP1()->{y};
+        # check whether denominator is zero
+        my $d=($s1->getP2()->{y}-$s1->getP1()->{y})/($s1->getP2()->{x}-$s1->getP1()->{x})-($s2->getP2()->{y}-$s2->getP1()->{y})/($s2->getP2()->{x}-$s2->getP1()->{x});
+        if ($d==0){ # TBC < 10-6
+            return undef;}
+        $x/=$d;
+        # y=(y3-y1)/(x2-x1)*(x-x1)+y1
+        $y=($s1->getP2()->{y}-$s1->getP1()->{y})/($s1->getP2()->{x}-$s1->getP1()->{x})*($x-$s1->getP1()->{x})+$s1->getP1()->{y}; 
     }
-    $x/=$d;
-      $x-=$s2->getP1()->{x}*($s2->getP2()->{y}-$s2->getP1()->{y});
-      $d=($s2->getP2()->{x}-$s2->getP1()->{x});
-      if (!$d){
-        print("Vertical segment 2 not yet supported");
-        return undef;
-      }
-      $x+=$s2->getP1()->{y}-$s1->getP1()->{y};
-      # check whether denominator is zero
-      $d=($s1->getP2()->{y}-$s1->getP1()->{y})/($s1->getP2()->{x}-$s1->getP1()->{x})-($s2->getP2()->{y}-$s2->getP1()->{y})/($s2->getP2()->{x}-$s2->getP1()->{x});
-    if ($d==0){ # TBC < 10-6
-        return undef;}
-    $x/=$d;
-    my $y=($s1->getP2()->{y}-$s1->getP1()->{y})/($s1->getP2()->{x}-$s1->getP1()->{x})*($x-$s1->getP1()->{x})+$s1->getP1()->{y};
     return Point->new(x=>$x,y=>$y);
 }
 
