@@ -94,9 +94,10 @@ sub isValidAirport{
     return 1; # TBC
 }
 
-# <line x1="0" y1="80" x2="100" y2="20" 
+# segment is displayed in green
+# <line x1="0" y1="80" x2="100" y2="20" stroke="green">
 sub toSVGHTMLTagString($self){
-    return "<line ${\$self->getP1()->toSVGSegmentString(1)} ${\$self->getP2()->toSVGSegmentString(2)} fill=\"none\" stroke=\"black\" />";
+    return "<line ${\$self->getP1()->toSVGSegmentString(1)} ${\$self->getP2()->toSVGSegmentString(2)} fill=\"none\" stroke=\"green\" />";
 }
 
 sub toString{
@@ -109,4 +110,4 @@ sub toString{
 }
 
 no Moose;
-1;
+__PACKAGE__->meta->make_immutable;

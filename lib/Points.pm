@@ -1,5 +1,5 @@
 =head1 NAME
-Points/Point set
+Points/Point set representing Polygon but also Segment/Edge, could be derived into Polygon at some point
 =head1 DESCRIPTION
 Represents a point set and therefore maybe used to represent a Polygon
 When representing a Polygon, point order is counter clockwise by convention
@@ -12,6 +12,7 @@ use experimental 'signatures';
 use Moose;
 
 use Point;
+#use Vertex;
 use constant CSV_EXT => '.csv';
 use constant TXT_EXT => '.txt';
 use constant SVG_EXT => '.svg';
@@ -27,7 +28,22 @@ has 'points' => (
                        add_point     => 'push'
                     }
                 );
-has 'candidateSegments' =>( 
+
+# edges (used for invalid runway segment identification)
+has edge =>( 
+                            is=>'ro',
+                            isa=>'ArrayRef[Segment]',
+                            traits => ['Array'],
+                            handles =>{
+                                all_edges => 'elements',
+                                count_edges => 'count',
+                                add_perimeterSegment => 'push'
+                            },
+                            default=>sub{[]}
+                          );
+
+# runway candidate segments
+has candidateSegments =>( 
                             is=>'ro',
                             isa=>'ArrayRef[Segment]',
                             traits => ['Array'],
@@ -38,7 +54,7 @@ has 'candidateSegments' =>(
                             }
                           );
 
-has 'longestSegments' => (
+has longestSegments => (
                             is=>'ro',
                             isa=>'ArrayRef[Segment]',
                             traits => ['Array'],
@@ -146,6 +162,34 @@ sub buildLongestSegments{
     }
 }
 
+# Runway should be on-shore
+
+# build edges
+# only polygons > 3 (at least a triangle) make sense
+sub buildEdges($self){
+    my $point_count=$self->count_points();
+    if ($point_count<3){
+        return;
+    }
+    my @points=$self->all_points();
+    if ($self->count_edges()>0){
+        return; # computation done once
+    }
+    for (my $ind = 0; $ind < $point_count-1; $ind++) {
+        $self->add_perimeterSegment(Segment->new(points=>[$points[$ind],$points[$ind+1]]));
+    }
+    # add last one by looping back to first point
+    $self->add_perimeterSegment(Segment->new(points=>[$points[$point_count-1],$points[0]]));
+
+}
+
+# whether the candidate segment is fully onshore:
+#     -should not intersection any edge other than at its start and end
+#     -should not start directly off-shore: ensure that starting angle is within the containing edge angles
+sub isValid($self, $candidateSegment){
+
+}
+
 sub toSVGFile($self){
     my $name=$self->name || "noName";
     my $file_path=$name.SVG_EXT;
@@ -159,15 +203,21 @@ sub toSVGFile($self){
 
 # <polygon points="0,100 50,25 50,75 100,0" />
 sub toSVGString($self){
-   my $st='<svg viewBox="-200 -200 200 100" xmlns="http://www.w3.org/2000/svg">';
+   my $st='<svg viewBox="-20 -20 200 100" xmlns="http://www.w3.org/2000/svg">';
+   # draw the perimeter shape
    $st.=$self->toSVGHTMLTagString(); 
+   # draw the longest segment
+   if ($self->count_longestSegments()>0){
+        $st.=join(',',map($_->toSVGHTMLTagString(), $self->all_longestSegments()));
+   }
    $st.="</svg>";
    return $st;
 }
 
+# draw the perimeter shape
 sub toSVGHTMLTagString($self){
     my $st="";
-    if ($self->count_points>2){
+    if ($self->count_points()>2){
         $st.='<polygon points="';
         $st.=join(" ",map($_->toSVGString(), $self->all_points()));
         $st.='" fill="none" stroke="black" />';
@@ -180,15 +230,20 @@ sub toString{
     my $st="";
     #my $count=$self->count_points;
     $st.='['.join(',',map($_->toString(), $self->all_points())).']';
+    if ($self->count_edges()>0){
+        $st.="\nedges#:${\$self->count_edges()}";
+        $st.="\nedges:[".join(',',map($_->toString(), $self->all_edges())).']';
+    }
     if ($self->all_candidateSegments()){
         $st.="\ncandidate segments:[".join(',',map($_->toString(), $self->all_candidateSegments())).']';
     }
     if ($self->count_longestSegments()>0){
         $st.="\nlongest segments#:${\$self->count_longestSegments()}";
-        # TO DO add them also
+        $st.="\nlongest segments:[".join(',',map($_->toString(), $self->all_longestSegments())).']';
     }
+    
     return $st;
 }
 
 no Moose;
-1
+__PACKAGE__->meta->make_immutable;

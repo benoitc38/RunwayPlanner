@@ -20,15 +20,17 @@ sub CreateFromString{
     return undef;
 }
 
-# TO DO if time for SVG rendering since only positive coordinate can be rendered?
+=pod TO DO if time for SVG rendering since only positive coordinate can be rendered?
 sub translate(){
 
 }
+=cut
+
 # when point is draw as a standalone segment
 # input: index of the point in the segment
 # example: x1="0" y1="80" or x2="100" y2="20"
 sub toSVGSegmentString($self, $ind){
-    return "x$ind=$self->{x} y$ind=$self->{y}";
+    return "x$ind=\"$self->{x}\" y$ind=\"$self->{y}\"";
 }
 
 sub toSVGString($self){
@@ -43,4 +45,5 @@ sub toString{
     $st="($self->{x},$self->{y})";
     return $st;
 }
-1
+no Moose;
+__PACKAGE__->meta->make_immutable;
