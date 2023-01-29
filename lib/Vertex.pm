@@ -48,6 +48,27 @@ sub getNextEdge($self){
     return $self->container->getEdgeByIndex($self->index);
 }
 
+# returns the absolute angle of the next edge
+# input: $edge as a Segment
+sub getEdgeAngle($self, $edge){
+    # bug direction not taken into account but let's start with that
+    return $edge->getAngle();
+}
+
+# returns previous edge angle relative to the x-axis
+# !! previous edges are counter-clockwise oriented at edge build
+# but from current edge it should be oriented in the opposite direction
+sub getPreviousEdgeAngle($self){
+    my $angle=$self->getEdgeAngle($self->getPreviousEdge());
+    $angle=($angle+180)%180; # flip it
+    return $angle;
+}
+
+# next edge angle relative to the x-axis
+sub getNextEdgeAngle($self){
+    return $self->getEdgeAngle($self->getNextEdge());
+}
+
 override 'toString' => sub($self){
     my $st="";
     $st.="V".super();

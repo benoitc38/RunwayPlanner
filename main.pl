@@ -46,16 +46,23 @@ print("island1:".$island1->toString());
 #island 1 (first file)
 my $v1=$island1->getVertexByIndex(0);
 
-# vertex unit tests
+# Vertex unit tests
+# first vertex
 print("\nfirst vertex:".$v1->toString());
 print("\nfirst next vertex:".$v1->getNext()->toString());
 print("\nfirst previous vertex:".$v1->getPrevious()->toString());
 print("\n previous edge:".$v1->getPreviousEdge()->toString());
 print("\n next edge:".$v1->getNextEdge()->toString());
-my $lastVertex=$island1->getVertexByIndex(6);
-print("\nlast vertex next vertex:".$lastVertex->getNext()->toString());
-print("\n next edge:".$v1->getNextEdge()->toString());
-# 
+print("\n previous edge angle:".$v1->getPreviousEdgeAngle());
+print("\n next edge angle:".$v1->getNextEdgeAngle());
+
+# last vertex
+my $v6=$island1->getVertexByIndex(6);
+print("\nlast vertex next vertex:".$v6->getNext()->toString());
+print("\nlast vertex next edge:".$v6->getNextEdge()->toString());
+print("\n previous edge angle:".$v6->getPreviousEdgeAngle());
+print("\n next edge angle:".$v6->getNextEdgeAngle());
+
 $island1->buildEdges();
 $island1->buildCandidateSegments(0);
 $island1->buildLongestSegments();

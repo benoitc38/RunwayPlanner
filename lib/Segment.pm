@@ -12,6 +12,8 @@ use FindBin::libs;
 use Points;
 use Moose;
 
+use Math::Trig;
+#use Math::Trig ':pi';
 
 extends 'Points';
 
@@ -48,6 +50,17 @@ sub getLength{
 # returns 1 if longer, 0 if equals, and -1 if shorter than segment 2
 sub isLongerThan($self, $segment2){
     return ($self->getLength() <=> $segment2->getLength());
+}
+
+# returns the Segment angle measured from the x axis between -PI and PI
+# unit: degrees for easier use
+# P1->P2 : arctan(y2-y1)/(x2-x1) 
+sub getAngle($self){
+    my $x1=$self->getP1()->{x};
+    my $y1=$self->getP1()->{y};
+    my $x2=$self->getP2()->{x};
+    my $y2=$self->getP2()->{y};
+    return atan2($y2-$y1,$x2-$x1)/pi*180;
 }
 
 # compute the intersection with another line
