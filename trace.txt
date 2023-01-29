@@ -89,7 +89,7 @@ p1:V(10,10)3p2:V(0,30)5length:22.3606797749979,
 p1:V(10,30)4p2:V(0,30)5length:10]
 valid longest segments#:1
 valid longest segments:[
-p1:V(40,10)2p2:V(0,30)5length:44.7213595499958]
+p1:V(0,0)0p2:V(40,10)2length:41.2310562561766]
 inter e0:(60,0)interior?0
 inter e1:(40,10)interior?0
 inter e2:(40,10)interior?0

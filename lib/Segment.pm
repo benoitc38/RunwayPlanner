@@ -63,10 +63,6 @@ sub getAngle($self){
     return atan2($y2-$y1,$x2-$x1)/pi*180;
 }
 
-sub isValid($self){
-    return $self->directsOnShore();
-}
-
 # whether the segment is directed towards the polygon (returns true), false otherwise
 # preconditions: the starting point is a Vertex
 sub directsOnShore($self){

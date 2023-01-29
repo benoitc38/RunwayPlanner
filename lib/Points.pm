@@ -207,7 +207,7 @@ sub buildValidLongestSegments{
     my $topLength;
    
     foreach my $candidateSegment (@sortedCandidateSegments){
-        if (!$candidateSegment->isValid()){  # optimize: check after equality?
+        if (!$self->isValid($candidateSegment)){  # optimize: check after equality?
             next;
         }
         if (!defined($topLength)){ # store top length in case of equality
