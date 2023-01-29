@@ -242,11 +242,25 @@ sub buildEdges($self){
 
 }
 
+# checks whether the $s segment intersects any of the polygon Edge interior 
+# Note: adjacent intersection returns 0
+# returns 1 or 0
+sub intersectsAnyEdgeInterior($self, $s){
+    foreach my $e ($self->all_edges()){
+        if ($s->intersectsSegmentInterior($e)){
+            return 1;
+        }
+    }
+    return 0;
+}
+
 # ensure the candidate segment is fully onshore:
-#     -should not intersection any edge other than at its start and end
+#     -should not intersect any edge interior (other than at its start and end)
 #     -should not start directly off-shore: ensure that starting angle is within the containing edge angles
 sub isValid($self, $candidateSegment){
-    my $angle=$candidateSegment->getAngle();
+    if ($self->intersectsAnyEdgeInterior($candidateSegment)){
+        return 0;
+    }
     if (!$candidateSegment->directsOnShore()){
         return 0;
     }

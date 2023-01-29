@@ -82,9 +82,7 @@ sub directsOnShore($self){
 
 # compute the intersection with another line
 # returns intersection as a Point or undef is lines are parallel
-sub computeLineIntersection{
-    my $self=shift;
-    my $s2=shift;
+sub computeLineIntersection($self,$s2){
     # segment 1: y=(y2-y1)/(x2-x1)*(x-x1)+y1
     # segment 2: y=(y4-y3)/(x4-x3)*(x-x3)+y3
     # intersection: 2 equations - 2 unknows
@@ -147,8 +145,34 @@ sub computeLineIntersection{
     return Point->new(x=>$x,y=>$y);
 }
 
-sub computeSegmentIntersection{
-    my $self=shift;
+# whether Segment intersects with $s2 Segment Interior i.e. at a Point different than the $s2 Segment ends
+# returns true or false
+# Note: Be careful of $s2 Interior (you should not swap $self and $s2)
+sub intersectsSegmentInterior($self,$s2){
+    my $inter=$self->computeLineIntersection($s2);
+    if (!$inter){
+        return 0;
+    }
+    # check whether line intersection is touching both Segments
+    # aliases for readability
+    my $x1=$self->getP1()->{x};
+    my $y1=$self->getP1()->{y};
+    my $x2=$self->getP2()->{x};
+    my $y2=$self->getP2()->{y};
+
+    my $x3=$s2->getP1()->{x};
+    my $y3=$s2->getP1()->{y};
+    my $x4=$s2->getP2()->{x};
+    my $y4=$s2->getP2()->{y};
+
+    # any coordinates of the $s2 segment allow to validate $s2 interior segment intersection
+    if ( ($x3<$inter->{x} && $inter->{x}<$x4) || ($x4<$inter->{x} && $inter->{x}<$x4) ){
+        return 1;
+    }
+    if ( ($y3<$inter->{y} && $inter->{y}<$y4) || ($y4<$inter->{y} && $inter->{y}<$y3) ){
+        return 1;
+    }
+    return 0;
 }
 
 # whether the segment is a valid airport proposal

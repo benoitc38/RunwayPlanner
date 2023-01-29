@@ -117,14 +117,12 @@ my $e5=$v0->getPreviousEdge();
 my $e3=$v4->getPreviousEdge();
 
 
-print("\ninter e0:".$cs->computeLineIntersection($e0)->toString());
-print("\ninter e1:".$cs->computeLineIntersection($e1)->toString());
-print("\ninter e2:".$cs->computeLineIntersection($e2)->toString());
-print("\ninter e3:".$cs->computeLineIntersection($e3)->toString());
-print("\ninter e4:".$cs->computeLineIntersection($e4)->toString());
-print("\ninter e5:".$cs->computeLineIntersection($e5)->toString());
+print("\ninter e0:".$cs->computeLineIntersection($e0)->toString()."interior?".$cs->intersectsSegmentInterior($e0));
+print("\ninter e1:".$cs->computeLineIntersection($e1)->toString()."interior?".$cs->intersectsSegmentInterior($e1));
+print("\ninter e2:".$cs->computeLineIntersection($e2)->toString()."interior?".$cs->intersectsSegmentInterior($e2));
+print("\ninter e3:".$cs->computeLineIntersection($e3)->toString()."interior?".$cs->intersectsSegmentInterior($e3));
+print("\ninter e4:".$cs->computeLineIntersection($e4)->toString()."interior?".$cs->intersectsSegmentInterior($e4));
+print("\ninter e5:".$cs->computeLineIntersection($e5)->toString()."interior?".$cs->intersectsSegmentInterior($e5));
 
-#my $iPoint=$cs->computeLineIntersection($e3);
-
-#print("intersection:".$iPoint->toString());
+print("\n any islandL edge interior intersection?".$islandL->intersectsAnyEdgeInterior($cs));
 
