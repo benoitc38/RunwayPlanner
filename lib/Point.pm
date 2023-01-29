@@ -15,7 +15,7 @@ sub CreateFromString{
     my $cls=shift;
     my @coordinates=split(' ',shift);
     if (scalar @coordinates>=2){
-        return Point->new(x=>$coordinates[0],y=>$coordinates[1]);
+        return $cls->new(x=>$coordinates[0],y=>$coordinates[1]);
     }
     return undef;
 }
@@ -37,13 +37,9 @@ sub toSVGString($self){
     return "${\$self->{x}},${\$self->{y}}";
 }
 
-sub toString{
-    my $self=shift;
-    my $st="";
-    $st.="x:$self->x";  
-    $st.="y:$self->{y}";
-    $st="($self->{x},$self->{y})";
-    return $st;
+sub toString($self){
+    return "($self->{x},$self->{y})";
 }
+
 no Moose;
 __PACKAGE__->meta->make_immutable;

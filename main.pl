@@ -39,10 +39,23 @@ print("unitTestIsland2:".$island->toString());
 $island->toSVGFile();
 
 my $island1=Points->CreateFromFile("island1.txt");
+$island1->initialize();
 print("island1:".$island1->toString());
 
 
 #island 1 (first file)
+my $v1=$island1->getVertexByIndex(0);
+
+# vertex unit tests
+print("\nfirst vertex:".$v1->toString());
+print("\nfirst next vertex:".$v1->getNext()->toString());
+print("\nfirst previous vertex:".$v1->getPrevious()->toString());
+print("\n previous edge:".$v1->getPreviousEdge()->toString());
+print("\n next edge:".$v1->getNextEdge()->toString());
+my $lastVertex=$island1->getVertexByIndex(6);
+print("\nlast vertex next vertex:".$lastVertex->getNext()->toString());
+print("\n next edge:".$v1->getNextEdge()->toString());
+# 
 $island1->buildEdges();
 $island1->buildCandidateSegments(0);
 $island1->buildLongestSegments();
@@ -58,7 +71,7 @@ $island2->buildLongestSegments();
 print("island2:".$island2->toString());
 $island2->toSVGFile();
 
-
+=pod
 my @points=[$p1,$p2];
 my $s1=Segment->new(points=>[$p1,$p2], name=>'s1');
 print("s1:".$s1->toString()." length:".$s1->getLength());
@@ -71,4 +84,4 @@ print("s2:".$s2->toString());
 my $iPoint=$s1->computeLineIntersection($s2);
 
 print("intersection:".$iPoint->toString());
-
+=cut

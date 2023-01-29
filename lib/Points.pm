@@ -12,25 +12,26 @@ use experimental 'signatures';
 use Moose;
 
 use Point;
-#use Vertex;
+use Vertex;
 use constant CSV_EXT => '.csv';
 use constant TXT_EXT => '.txt';
 use constant SVG_EXT => '.svg';
 
 
-has 'points' => (
+has points => (
                     is=>'rw', 
-                    isa=>'ArrayRef[Point]',
+                    isa=>'ArrayRef[Vertex]',
                     traits  => ['Array'],
                     handles =>{
                        all_points => 'elements',
                        count_points  => 'count',
-                       add_point     => 'push'
+                       add_point     => 'push',
+                       find_point   =>'first' # need an argument?
                     }
                 );
 
 # edges (used for invalid runway segment identification)
-has edge =>( 
+has edges =>( 
                             is=>'ro',
                             isa=>'ArrayRef[Segment]',
                             traits => ['Array'],
@@ -90,7 +91,7 @@ sub CreateFromString{
         print("Inconsistent first line $first_line_count! Expecting ($line_count-1) instead)");
         return undef
     }
-    my @points=map(Point->CreateFromString($_), @lines);
+    my @points=map(Vertex->CreateFromString($_), @lines);
     return Points->new(points=>\@points, candidateSegments=>[]);
 }
 
@@ -108,11 +109,64 @@ sub CreateFromFile{
     return $points;
 }
 
+# strange behavior: is executed but not properly initialized? 
+sub BUILD {
+    my $self = shift;
+    my @vertices=$self->all_points();
+
+    if (@vertices>=3){ # don't process Segment as Vertex yet (future?)
+        my $ind=0;
+        foreach my $v ($self->all_points()){
+            $v->container($self);
+            $v->index($ind);
+            $ind++;
+        }
+    }
+    #$self->initialize(); # doesn't help neither
+}
+
+# to workaround BUILD hook issue?!
+# also build the edges in the same counter-clockwise order as vertices
+sub initialize($self){
+    my @vertices=$self->all_points();
+    if ($self->count_points()>=3){ # segments should not be considered as containers
+        for (my $ind=0;$ind<$self->count_points();$ind++){
+            $vertices[$ind]->container($self);
+            $vertices[$ind]->index($ind);
+        }
+        $self->buildEdges();
+    }
+}
+
+# returns Vertex from index or undef
+# input: ind index starting at 0
+sub getVertexByIndex($self, $ind){
+    my @points=$self->all_points();
+    if ($ind<$self->count_points()){
+        return $points[$ind];
+    }else{
+        return undef;
+    }
+}
+
+# returns Vertex from index or undef
+# precondition: edge have been built but as part of initialization
+# precondition: $ind is valid? or let Perl cope with negative indexes?
+# input: ind index starting at 0
+sub getEdgeByIndex($self, $ind){
+    my @edges=$self->all_edges();
+    if ($ind<$self->count_edges()){
+        return $edges[$ind];
+    }else{
+        return undef;
+    }
+}
+
 # input: line as a string
 sub addFromLine{
     my $self=shift;
     my $line=shift;
-    my $point=Point->CreateFromString($line);
+    my $point=Vertex->CreateFromString($line);
     if ($point){
         $self->add_point($point);
     }

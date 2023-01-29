@@ -37,14 +37,15 @@ sub getNext($self){
     return $self->container->getVertexByIndex(($self->index+1) % $self->container->count_points());
 }
 
+# returns previous edge (going clockwise) adjacent to this vertex
 # TO DO don't forget to swap Segment direction in some cases
 sub getPreviousEdge($self){
-
+    return $self->container->getEdgeByIndex($self->index-1);
 }
 
-# TO DO
+# returns next edge (counter-clockwise) adjacent to this vertex
 sub getNextEdge($self){
-
+    return $self->container->getEdgeByIndex($self->index);
 }
 
 override 'toString' => sub($self){
