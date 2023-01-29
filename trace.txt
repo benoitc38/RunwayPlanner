@@ -90,9 +90,10 @@ p1:V(10,30)4p2:V(0,30)5length:10]
 valid longest segments#:1
 valid longest segments:[
 p1:V(40,10)2p2:V(0,30)5length:44.7213595499958]
-inter e0:(60,0)
-inter e1:(40,10)
-inter e2:(40,10)
-inter e3:(10,25)
-inter e4:(0,30)
-inter e5:(0,30)
+inter e0:(60,0)interior?0
+inter e1:(40,10)interior?0
+inter e2:(40,10)interior?0
+inter e3:(10,25)interior?1
+inter e4:(0,30)interior?0
+inter e5:(0,30)interior?0
+ any islandL edge interior intersection?1
