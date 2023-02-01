@@ -124,6 +124,10 @@ sub computeLineIntersection($self,$s2){
         $x=$x3;
         $y=($y2-$y1)/($x2-$x1)*($x3-$x1)+$y1;
     }else{
+        #x=x1*(y2-y1)/(x2-x1)-x3*(y4-y3)/(x4-x3)+y3-y1;
+        $x=$x1*($y2-$y1)/($x2-$x1)-$x3*($y4-$y3)/($x4-$x3)+$y3-$y1;
+        $y=($y2-$y1)/($x2-$x1)*($x-$x1)+$y1;
+=pod
         $x=$s1->getP1()->{x}*($s1->getP2()->{y}-$s1->getP1()->{y});
         my $d1=($s1->getP2()->{x}-$s1->getP1()->{x});
         $x/=$d1;
@@ -137,6 +141,7 @@ sub computeLineIntersection($self,$s2){
         $x/=$d;
         # y=(y3-y1)/(x2-x1)*(x-x1)+y1
         $y=($s1->getP2()->{y}-$s1->getP1()->{y})/($s1->getP2()->{x}-$s1->getP1()->{x})*($x-$s1->getP1()->{x})+$s1->getP1()->{y}; 
+=cut
     }
     return Point->new(x=>$x,y=>$y);
 }

@@ -81,7 +81,7 @@ $island2->toSVGFile();
 
 
 #island L (test case for non valid offshore candidate)
-my $islandL=Points->CreateFromFile("islandL.txt");
+my $islandL=Points->CreateFromFile("islandC.txt");
 $islandL->initialize();
 #print("island2:".$island2->toString());
 $islandL->buildEdges();
@@ -109,6 +109,10 @@ my $v3=$islandL->getVertexByIndex(3);
 my $v4=$islandL->getVertexByIndex(4);
 my $v5=$islandL->getVertexByIndex(5);
 my $cs=Segment->new(points=>[$v2,$v5]);
+my @longestSegments=$islandL->all_longestSegments();
+if ($islandL->count_longestSegments()>0){
+    $cs=$longestSegments[0]; # take the algo calculation
+}
 my $e0=$v0->getNextEdge();
 my $e1=$v2->getPreviousEdge();
 my $e2=$v2->getNextEdge();
@@ -116,7 +120,7 @@ my $e4=$v4->getNextEdge();
 my $e5=$v0->getPreviousEdge();
 my $e3=$v4->getPreviousEdge();
 
-
+print("e4:".$e4->toString());
 print("\ninter e0:".$cs->computeLineIntersection($e0)->toString()."interior?".$cs->intersectsSegmentInterior($e0));
 print("\ninter e1:".$cs->computeLineIntersection($e1)->toString()."interior?".$cs->intersectsSegmentInterior($e1));
 print("\ninter e2:".$cs->computeLineIntersection($e2)->toString()."interior?".$cs->intersectsSegmentInterior($e2));
